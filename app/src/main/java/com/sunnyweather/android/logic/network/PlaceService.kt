@@ -6,8 +6,10 @@ import com.sunnyweather.android.logic.model.PlaceResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface PlaceService {
+//retrofit基本用法
 
-    @GET("v2/place?token=${SunnyWeatherApplication.TOKEN}&lang=zh_CH")
+interface PlaceService {
+    @GET("v2/place?token=${SunnyWeatherApplication.TOKEN}&lang=zh_CN")
     fun searchPlace(@Query("query") query:String): Call<PlaceResponse>
+    //返回值的泛型定义为PlaceResponse 会被强制转换成这个对象
 }
