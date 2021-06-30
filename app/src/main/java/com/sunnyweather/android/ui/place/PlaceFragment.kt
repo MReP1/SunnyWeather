@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sunnyweather.android.R
 import androidx.recyclerview.widget.RecyclerView
+import com.sunnyweather.android.MainActivity
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.toast
 import com.sunnyweather.android.ui.weather.WeatherActivity
@@ -44,7 +45,7 @@ class PlaceFragment:Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (viewModel.isPlaceSaved()){
+        if (activity is MainActivity&&viewModel.isPlaceSaved()){
             val place = viewModel.getSavedPlace()
             val intent = Intent(context,WeatherActivity::class.java).apply {
                 putExtra("location_lng",place.location.lng)
@@ -56,13 +57,11 @@ class PlaceFragment:Fragment() {
             return
         }
 
-
         //给RecyclerView设置LayoutManager和适配器
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         adapter = PlaceAdapter(this,viewModel.placeList)
         recyclerView.adapter = adapter
-
         searchPlaceEdit.addTextChangedListener { editable ->
             val content = editable.toString()
             if(content.isNotEmpty()){
