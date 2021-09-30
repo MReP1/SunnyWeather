@@ -18,13 +18,13 @@ import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.toast
 import com.sunnyweather.android.ui.weather.WeatherActivity
 
-class PlaceFragment:Fragment() {
+class PlaceFragment : Fragment() {
     private lateinit var searchPlaceAdapter: PlaceAdapter
     private lateinit var adapter: PlaceAdapter
 
-    private lateinit var searchPlaceEdit:EditText
+    private lateinit var searchPlaceEdit: EditText
     private lateinit var recyclerView: RecyclerView
-    private lateinit var bgImageView:ImageView
+    private lateinit var bgImageView: ImageView
 
     val viewModel by lazy {
         ViewModelProvider(this).get(PlaceViewModel::class.java)
@@ -35,7 +35,7 @@ class PlaceFragment:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view  = inflater.inflate(R.layout.fragment_place,container,false)
+        val view = inflater.inflate(R.layout.fragment_place, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
         searchPlaceEdit = view.findViewById(R.id.searchPlaceEdit)
         bgImageView = view.findViewById(R.id.bgImageView)
@@ -45,12 +45,12 @@ class PlaceFragment:Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (activity is MainActivity&&viewModel.isPlaceSaved()){
+        if (activity is MainActivity && viewModel.isPlaceSaved()) {
             val place = viewModel.getSavedPlace()
-            val intent = Intent(context,WeatherActivity::class.java).apply {
-                putExtra("location_lng",place.location.lng)
-                putExtra("location_lat",place.location.lat)
-                putExtra("place_name",place.name)
+            val intent = Intent(context, WeatherActivity::class.java).apply {
+                putExtra("location_lng", place.location.lng)
+                putExtra("location_lat", place.location.lat)
+                putExtra("place_name", place.name)
             }
             startActivity(intent)
             activity?.finish()
@@ -60,13 +60,13 @@ class PlaceFragment:Fragment() {
         //给RecyclerView设置LayoutManager和适配器
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
-        adapter = PlaceAdapter(this,viewModel.placeList)
+        adapter = PlaceAdapter(this, viewModel.placeList)
         recyclerView.adapter = adapter
         searchPlaceEdit.addTextChangedListener { editable ->
             val content = editable.toString()
-            if(content.isNotEmpty()){
+            if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
-            }else{
+            } else {
                 recyclerView.visibility = View.GONE
                 bgImageView.visibility = View.VISIBLE
                 viewModel.placeList.clear()
@@ -75,14 +75,14 @@ class PlaceFragment:Fragment() {
         }
         viewModel.placeLiveData.observe(this.viewLifecycleOwner, { result ->
             val places = result.getOrNull()
-            if(places!=null){
+            if (places != null) {
                 recyclerView.visibility = View.VISIBLE
                 bgImageView.visibility = View.GONE
                 viewModel.placeList.clear()
                 viewModel.placeList.addAll(places)
                 adapter.notifyDataSetChanged()
-            }else{
-                activity?.let { toast(it,"未能查询到地点") }
+            } else {
+                activity?.let { toast(it, "未能查询到地点") }
                 result.exceptionOrNull()?.printStackTrace()
             }
         })
